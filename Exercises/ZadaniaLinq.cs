@@ -192,8 +192,10 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie12_ParyStudentPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie12_ParyStudentPrzedmiot));
+        return DaneUczelni.Studenci.Join(DaneUczelni.Zapisy, s => s.Id, z => z.StudentId,
+            (student, zapis) => new {student , zapis}).Join(DaneUczelni.Przedmioty , zs=> zs.zapis.PrzedmiotId , przedmiot => przedmiot.Id , ((arg1, przedmiot) => $"{arg1.student.Imie + " " + przedmiot.Nazwa + " " + arg1.zapis.Id }" ) );
     }
+    
 
     /// <summary>
     /// Zadanie:
@@ -207,9 +209,11 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie13_GrupowanieZapisowWedlugPrzedmiotu()
     {
-        throw Niezaimplementowano(nameof(Zadanie13_GrupowanieZapisowWedlugPrzedmiotu));
+        return DaneUczelni.Zapisy.Join(DaneUczelni.Przedmioty, zapis => zapis.PrzedmiotId, przedmiot => przedmiot.Id,
+                (zapis, przedmiot) => new { przedmiot.Nazwa })
+            .GroupBy(p => p.Nazwa).Select(p => $"{p.Key} {p.Count()}");
     }
-
+    
     /// <summary>
     /// Zadanie:
     /// Oblicz średnią ocenę końcową dla każdego przedmiotu.
@@ -224,7 +228,9 @@ public sealed class ZadaniaLinq
     /// </summary>
     public IEnumerable<string> Zadanie14_SredniaOcenaNaPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie14_SredniaOcenaNaPrzedmiot));
+        return DaneUczelni.Zapisy.Join(DaneUczelni.Przedmioty, zapis => zapis.PrzedmiotId, przedmiot => przedmiot.Id,
+                (zapis, przedmiot) => new { zapis.OcenaKoncowa ,przedmiot.Nazwa })
+            .GroupBy(p => p.Nazwa).Select(g => $"{g.Key + " " + g.Average(p=>p.OcenaKoncowa)}");
     }
 
     /// <summary>
